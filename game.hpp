@@ -11,7 +11,8 @@
 #include "settings.hpp"
 #include "map.hpp"
 #include "player.hpp"
-#include "raycasting.hpp"
+#include "wall_render.hpp"
+#include "floor_render.hpp"
 #include "assets.hpp"
 
 // game context
@@ -32,6 +33,8 @@ public:
     std::vector<sf::CircleShape> mini_copy;
     sf::VertexArray map_rays;
     sf::VertexArray wall_quads;
+    sf::VertexArray floor_quads;
+    sf::VertexArray sky;
 
     Game()
     {
@@ -53,14 +56,12 @@ public:
         Map map;
         mini_map = map.mini_map();
         Player player;
+
+        sky = update_sky();
     };
 
     void game_update()
     {
-        // fill screen with color
-        window.clear(sf::Color(115, 215, 255, 255));
-        //window.clear(sf::Color(0, 0, 0, 255));
-
         // find FPS
         frame_time = clock.restart().asSeconds();
         current_fps = 1.0f / frame_time;
@@ -74,16 +75,28 @@ public:
         mini_copy = player.mini_copy();
 
         if (player.moved) {
+            Raycast_floor raycast_floor (player);
+            floor_quads = raycast_floor.draw_floor();
             Raycast_walls raycast_walls (player, map);
             map_rays = raycast_walls.map_rays();
             wall_quads = raycast_walls.draw_walls();
+            sky = update_sky();
         };
     };
 
     void game_draw()
     {
+        // fill screen with color
+        window.clear(sf::Color(146, 226, 253, 255));
+
+        // show sky
+        window.draw(sky, &assets.back_textures[0]);
+
+        // show floor
+        window.draw(floor_quads, &assets.back_textures[1]);
+
         // show walls
-        window.draw(wall_quads, &assets.wall_textures[1]);
+        window.draw(wall_quads, &assets.wall_textures[0]);
 
         // show mini map
         draw_mini_map();
@@ -153,6 +166,33 @@ public:
             window.draw(mini_copy[j]);
         };
     };
+
+    sf::VertexArray update_sky() {
+        sf::VertexArray sky(sf::Quads, 8);
+
+        sf::Vector2u tex_size = assets.back_textures[0].getSize();
+
+        sky[0].position = sf::Vector2f(- WINDOW_WIDTH * player.angle / PI, HALF_HEIGHT * 1.0f);
+        sky[1].position = sf::Vector2f(WINDOW_WIDTH * (2.01f - player.angle / PI), HALF_HEIGHT * 1.0f);
+        sky[2].position = sf::Vector2f(WINDOW_WIDTH * (2.01f - player.angle / PI), 0.f);
+        sky[3].position = sf::Vector2f(- WINDOW_WIDTH * player.angle / PI, 0.f);
+        sky[4].position = sf::Vector2f(WINDOW_WIDTH * (2.01f - player.angle / PI), HALF_HEIGHT * 1.0f);
+        sky[5].position = sf::Vector2f(WINDOW_WIDTH * (4.01f - player.angle / PI), HALF_HEIGHT * 1.0f);
+        sky[6].position = sf::Vector2f(WINDOW_WIDTH * (4.01f - player.angle / PI), 0.f);
+        sky[7].position = sf::Vector2f(WINDOW_WIDTH * (2.01f - player.angle / PI), 0.f);
+        
+        sky[0].texCoords = sf::Vector2f(0.f, tex_size.y * 1.0f);
+        sky[1].texCoords = sf::Vector2f(tex_size.x * 1.0f, tex_size.y * 1.0f);
+        sky[2].texCoords = sf::Vector2f(tex_size.x * 1.0f, 0.f);
+        sky[3].texCoords = sf::Vector2f(0.f, 0.f);
+        sky[4].texCoords = sf::Vector2f(0.f, tex_size.y * 1.0f);
+        sky[5].texCoords = sf::Vector2f(tex_size.x * 1.0f, tex_size.y * 1.0f);
+        sky[6].texCoords = sf::Vector2f(tex_size.x * 1.0f, 0.f);
+        sky[7].texCoords = sf::Vector2f(0.f, 0.f);
+
+        return(sky);
+    };
+
 };
 
 #endif /* GAME_HPP */

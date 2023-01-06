@@ -10,6 +10,17 @@
 #include "input.hpp"
 #include "map.hpp"
 
+float round_angle(float angle) {
+    float a = angle / (2.0f * PI);
+    if (a > 1.0f) {
+        angle = angle - 2.0f * PI * floor(a);
+    }
+    if (a < 0.0) {
+        angle = angle + (1.0f - floor(a)) * 2.0f * PI;
+    }
+    return(angle);
+};
+
 int get_tile(float x, float y)
 {
     return (floor(y) * MAP_WIDTH + floor(x) + 1);
@@ -116,7 +127,7 @@ public:
             moved = true;
         };
 
-        angle = fmod(angle, 2 * PI);
+        angle = round_angle(angle);
     };
 
     void update(InputState input_state, float frame_time, std::map<int, int> walls)

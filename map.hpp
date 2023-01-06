@@ -61,6 +61,7 @@ public:
         whole_map.setSize(sf::Vector2f(MINI_MAP_WIDTH, MINI_MAP_HEIGHT));
         whole_map.setPosition(sf::Vector2f(MINI_MAP_X, MINI_MAP_Y));
         whole_map.setFillColor(sf::Color(150, 150, 150, 255));
+        whole_map.setOutlineThickness(0.f);
 
         to_draw.push_back(whole_map);
 
@@ -71,7 +72,7 @@ public:
             tile.setPosition(sf::Vector2f(MINI_MAP_X + walls_x[w] * TILE_WIDTH,
                                           MINI_MAP_Y + walls_y[w] * TILE_HEIGHT));
             tile.setFillColor(sf::Color(50, 50, 50, 255));
-            tile.setOutlineColor(sf::Color(255, 255, 255, 255));
+            whole_map.setOutlineThickness(0.f);
 
             to_draw.push_back(tile);
         }

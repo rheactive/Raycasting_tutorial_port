@@ -12,6 +12,7 @@
 #include "map.hpp"
 #include "player.hpp"
 #include "raycasting.hpp"
+#include "assets.hpp"
 
 // game context
 
@@ -23,12 +24,14 @@ public:
     float frame_time;
     float current_fps;
     sf::Font font;
+    Assets assets;
     InputState input_state;
     Map map;
     std::vector<sf::RectangleShape> mini_map;
     Player player;
     std::vector<sf::CircleShape> mini_copy;
     sf::VertexArray map_rays;
+    sf::VertexArray wall_quads;
 
     Game()
     {
@@ -36,18 +39,16 @@ public:
         window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT),
                       WINDOW_TITLE, sf::Style::Default);
         window.setFramerateLimit(TARGET_FPS);
-
         window.setKeyRepeatEnabled(false);
-
-        sf::Clock clock;
-
-        font.loadFromFile("resources/brohoney.ttf");
 
         new_game();
     };
 
     void new_game()
     {
+        sf::Clock clock;
+        font.loadFromFile("resources/brohoney.ttf");
+        Assets assets;
         InputState input_state;
         Map map;
         mini_map = map.mini_map();
@@ -57,7 +58,8 @@ public:
     void game_update()
     {
         // fill screen with color
-        window.clear(sf::Color(115, 215, 255, 255));
+        //window.clear(sf::Color(115, 215, 255, 255));
+        window.clear(sf::Color(0, 0, 0, 255));
 
         // find FPS
         frame_time = clock.restart().asSeconds();
@@ -74,6 +76,7 @@ public:
         if (player.moved) {
             Raycast_walls raycast_walls (player, map);
             map_rays = raycast_walls.map_rays();
+            wall_quads = raycast_walls.draw_walls();
         };
     };
 
@@ -83,9 +86,12 @@ public:
         std::ostringstream display_fps;
         display_fps << "FPS: " << std::fixed << std::setprecision(1) << current_fps;
         sf::Text text(display_fps.str(), font, 40);
-        text.setFillColor(sf::Color::Black);
+        text.setFillColor(sf::Color::White);
         text.setPosition(20.f, 20.f);
         window.draw(text);
+
+        // show walls
+        window.draw(wall_quads);
 
         // show mini map
         draw_mini_map();

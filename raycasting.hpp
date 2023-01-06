@@ -210,32 +210,32 @@ public:
 
         sf::VertexArray to_draw(sf::Quads, RAYS_NUMBER * 4);
 
-        //float scale;
-        //float width;
-        int color;
-        //float x1;
+        float scale;
+        float width;
+        //int color;
+        float x1;
 
         for (int k = 0; k < RAYS_NUMBER; k++)
         {
-            //scale = rays[k].height / TILE_TEXTURE_SIZE;
-            //width = STEP_SIZE / scale;
-            color = 255 * 0.5 * (1 + fmin(pow(rays[k].height / WINDOW_HEIGHT, 0.5), 1.f));
-            //x1 = rays[k].offset * TILE_TEXTURE_SIZE;
+            scale = rays[k].height / TILE_TEXTURE_SIZE;
+            width = STEP_SIZE / scale;
+            //color = 255 * 0.5 * (1 + fmin(pow(rays[k].height / WINDOW_HEIGHT, 0.5), 1.f));
+            x1 = rays[k].offset * TILE_TEXTURE_SIZE;
             
             to_draw[4 * k].position = sf::Vector2f(k * STEP_SIZE, HALF_HEIGHT + 0.5 * rays[k].height);
             to_draw[4 * k + 1].position = sf::Vector2f(k * STEP_SIZE, HALF_HEIGHT - 0.5 * rays[k].height);
             to_draw[4 * k + 2].position = sf::Vector2f(k * STEP_SIZE + STEP_SIZE, HALF_HEIGHT - 0.5 * rays[k].height);
             to_draw[4 * k + 3].position = sf::Vector2f(k * STEP_SIZE + STEP_SIZE, HALF_HEIGHT + 0.5 * rays[k].height);
 
-            to_draw[4 * k].color = sf::Color(color, color, color, 255);
-            to_draw[4 * k + 1].color = sf::Color(color, color, color, 255);
-            to_draw[4 * k + 2].color = sf::Color(color, color, color, 255);
-            to_draw[4 * k + 3].color = sf::Color(color, color, color, 255);
+            // to_draw[4 * k].color = sf::Color(color, color, color, 255);
+            // to_draw[4 * k + 1].color = sf::Color(color, color, color, 255);
+            // to_draw[4 * k + 2].color = sf::Color(color, color, color, 255);
+            // to_draw[4 * k + 3].color = sf::Color(color, color, color, 255);
 
-        //     to_draw[4 * k].texCoords = sf::Vector2f(k * STEP_SIZE, HALF_HEIGHT + 0.5 * rays[k].height);
-        //     to_draw[4 * k + 1].texCoords = sf::Vector2f(k * STEP_SIZE, HALF_HEIGHT - 0.5 * rays[k].height);
-        //     to_draw[4 * k + 2].texCoords = sf::Vector2f(k * STEP_SIZE + width, HALF_HEIGHT - 0.5 * rays[k].height);
-        //     to_draw[4 * k + 3].texCoords = sf::Vector2f(k * STEP_SIZE + width, HALF_HEIGHT + 0.5 * rays[k].height);
+            to_draw[4 * k].texCoords = sf::Vector2f(x1, 0.f);
+            to_draw[4 * k + 1].texCoords = sf::Vector2f(x1, TILE_TEXTURE_SIZE);
+            to_draw[4 * k + 2].texCoords = sf::Vector2f(x1 + width, TILE_TEXTURE_SIZE);
+            to_draw[4 * k + 3].texCoords = sf::Vector2f(x1 + width, 0.f);
         };
 
         return(to_draw);

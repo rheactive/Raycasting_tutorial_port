@@ -17,10 +17,10 @@ const char *WINDOW_TITLE = "Raycasting tutorial";
 // map related constants
 const int MAP_WIDTH = 16;
 const int MAP_HEIGHT = 16;
-const int MINI_MAP_WIDTH = 480;
-const int MINI_MAP_HEIGHT = 480;
-const int MINI_MAP_X = WINDOW_WIDTH - MINI_MAP_WIDTH - 30;
-const int MINI_MAP_Y = 30;
+const int MINI_MAP_WIDTH = 320;
+const int MINI_MAP_HEIGHT = 320;
+const int MINI_MAP_X = WINDOW_WIDTH - MINI_MAP_WIDTH - 20;
+const int MINI_MAP_Y = 20;
 const int TILE_WIDTH = MINI_MAP_WIDTH / MAP_WIDTH;
 const int TILE_HEIGHT = MINI_MAP_HEIGHT / MAP_HEIGHT;
 

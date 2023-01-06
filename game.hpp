@@ -58,8 +58,8 @@ public:
     void game_update()
     {
         // fill screen with color
-        //window.clear(sf::Color(115, 215, 255, 255));
-        window.clear(sf::Color(0, 0, 0, 255));
+        window.clear(sf::Color(115, 215, 255, 255));
+        //window.clear(sf::Color(0, 0, 0, 255));
 
         // find FPS
         frame_time = clock.restart().asSeconds();
@@ -82,16 +82,8 @@ public:
 
     void game_draw()
     {
-        // show FPS
-        std::ostringstream display_fps;
-        display_fps << "FPS: " << std::fixed << std::setprecision(1) << current_fps;
-        sf::Text text(display_fps.str(), font, 40);
-        text.setFillColor(sf::Color::White);
-        text.setPosition(20.f, 20.f);
-        window.draw(text);
-
         // show walls
-        window.draw(wall_quads);
+        window.draw(wall_quads, &assets.wall_textures[1]);
 
         // show mini map
         draw_mini_map();
@@ -101,6 +93,14 @@ public:
 
         // show player on mini map
         draw_mini_copy();
+
+        // show FPS
+        std::ostringstream display_fps;
+        display_fps << "FPS: " << std::fixed << std::setprecision(1) << current_fps;
+        sf::Text text(display_fps.str(), font, 40);
+        text.setFillColor(sf::Color::Black);
+        text.setPosition(20.f, 20.f);
+        window.draw(text);
 
         // end the current frame
         window.display();

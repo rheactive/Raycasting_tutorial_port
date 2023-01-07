@@ -2,6 +2,7 @@
 #define MAP_HPP
 
 #include <vector>
+#include <tuple>
 #include <map>
 
 #include <SFML/Graphics.hpp>
@@ -9,16 +10,16 @@
 #include "settings.hpp"
 
 // define the map(s)
-const int map_walls[MAP_HEIGHT][MAP_WIDTH] =
+const int map1_walls[MAP_HEIGHT][MAP_WIDTH] =
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
      1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
      1, 0, 0, 2, 2, 2, 2, 0, 0, 0, 3, 3, 3, 0, 0, 1,
      1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 3, 0, 0, 1,
      1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 3, 0, 0, 1,
-     1, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1,
      1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
      1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
      1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1,
      1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 1,
      1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -27,30 +28,99 @@ const int map_walls[MAP_HEIGHT][MAP_WIDTH] =
      1, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
+const int map1_sprites[MAP_HEIGHT][MAP_WIDTH] =
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+const int map2_walls[MAP_HEIGHT][MAP_WIDTH] =
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
 // map
+
+class MapElement {
+    public:
+        int tex_id;
+        float x;
+        float y;
+};
 
 class Map
 {
 public:
-    std::map<int, int> walls;
-    std::vector<int> walls_x;
-    std::vector<int> walls_y;
+    int map_id;
+    std::map<int, MapElement> walls;
+    std::map<int, MapElement> sprites;
 
-    Map()
+    Map (int map_id)
     {
-        for (int x = 0; x < MAP_WIDTH; x++)
+        if (map_id == 1)
+        {
+            for (int x = 0; x < MAP_WIDTH; x++)
         {
             for (int y = 0; y < MAP_HEIGHT; y++)
             {
-                if (map_walls[y][x] > 0)
+                if (map1_walls[y][x] > 0)
                 {
                     int tile = y * MAP_WIDTH + x + 1;
-                    walls[tile] = map_walls[y][x];
-                    walls_x.push_back(x);
-                    walls_y.push_back(y);
+                    walls[tile].tex_id = map1_walls[y][x];
+                    walls[tile].x = x;
+                    walls[tile].y = y;
+                };
+                if (map1_sprites[y][x] > 0)
+                {
+                    int tile = y * MAP_WIDTH + x + 1;
+                    sprites[tile].tex_id = map1_sprites[y][x];
+                    sprites[tile].x = x + 0.5;
+                    sprites[tile].y = y + 0.5;
                 }
             }
         }
+        }
+        else if (map_id == 2)
+        {
+            for (int x = 0; x < MAP_WIDTH; x++)
+        {
+            for (int y = 0; y < MAP_HEIGHT; y++)
+            {
+                if (map2_walls[y][x] > 0)
+                {
+                    int tile = y * MAP_WIDTH + x + 1;
+                    walls[tile].tex_id = map1_walls[y][x];
+                    walls[tile].x = x;
+                    walls[tile].y = y;
+                }
+            }
+        }
+        } 
     };
 
     std::vector<sf::RectangleShape> mini_map()
@@ -65,12 +135,12 @@ public:
 
         to_draw.push_back(whole_map);
 
-        for (int w = 0; w < walls.size(); w++)
+        for (auto const &w : walls)
         {
             sf::RectangleShape tile;
             tile.setSize(sf::Vector2f(TILE_WIDTH, TILE_HEIGHT));
-            tile.setPosition(sf::Vector2f(MINI_MAP_X + walls_x[w] * TILE_WIDTH,
-                                          MINI_MAP_Y + walls_y[w] * TILE_HEIGHT));
+            tile.setPosition(sf::Vector2f(MINI_MAP_X + w.second.x * TILE_WIDTH,
+                                          MINI_MAP_Y + w.second.y * TILE_HEIGHT));
             tile.setFillColor(sf::Color(50, 50, 50, 255));
             whole_map.setOutlineThickness(0.f);
 

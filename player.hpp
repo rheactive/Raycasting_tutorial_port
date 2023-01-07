@@ -10,7 +10,7 @@
 #include "input.hpp"
 #include "map.hpp"
 
-float round_angle(float angle) {
+float round_angle(float &angle) {
     float a = angle / (2.0f * PI);
     if (a > 1.0f) {
         angle = angle - 2.0f * PI * floor(a);
@@ -21,24 +21,28 @@ float round_angle(float angle) {
     return(angle);
 };
 
-int get_tile(float x, float y)
+int get_tile(const float &x, const float &y)
 {
     return (floor(y) * MAP_WIDTH + floor(x) + 1);
 };
 
-bool walls_collide(float x, float y, std::map<int, int> walls)
+int walls_collide(const float &x, const float &y, Map &map)
 {
-    bool collision = false;
-    if (walls.count(get_tile(x + PLAYER_RADIUS, y + PLAYER_RADIUS)) == 1)
-        collision = true;
-    if (walls.count(get_tile(x + PLAYER_RADIUS, y - PLAYER_RADIUS)) == 1)
-        collision = true;
-    if (walls.count(get_tile(x - PLAYER_RADIUS, y + PLAYER_RADIUS)) == 1)
-        collision = true;
-    if (walls.count(get_tile(x - PLAYER_RADIUS, y - PLAYER_RADIUS)) == 1)
-        collision = true;
+    int wall_id = 0;
+    int tile = get_tile(x + PLAYER_RADIUS, y + PLAYER_RADIUS);
+    if (map.walls.count(tile) == 1)
+        wall_id = map.walls[tile].tex_id;
+    tile = get_tile(x + PLAYER_RADIUS, y - PLAYER_RADIUS);
+    if (map.walls.count(tile) == 1)
+        wall_id = map.walls[tile].tex_id;
+    tile = get_tile(x - PLAYER_RADIUS, y + PLAYER_RADIUS);
+    if (map.walls.count(tile) == 1)
+        wall_id = map.walls[tile].tex_id;
+    tile = get_tile(x - PLAYER_RADIUS, y - PLAYER_RADIUS);
+    if (map.walls.count(tile) == 1)
+        wall_id = map.walls[tile].tex_id;
 
-    return (collision);
+    return (wall_id);
 };
 
 class Player
@@ -48,6 +52,7 @@ public:
     float y;
     float angle;
     bool moved;
+    int map_id;
 
     Player()
     {
@@ -55,9 +60,10 @@ public:
         y = PLAYER_Y;
         angle = PLAYER_ANGLE;
         moved = false;
+        map_id = 1;
     };
 
-    void movement(InputState input_state, float frame_time, std::map<int, int> walls)
+    void movement(InputState &input_state, const float &frame_time, Map &map)
     {
         float cos_a = cos(angle);
         float sin_a = sin(angle);
@@ -95,24 +101,33 @@ public:
             moved = true;
         };
 
-        if (!walls_collide(x + dx, y + dy, walls))
+        int wc1 = walls_collide(x + dx, y + dy, map);
+        int wc2 = walls_collide(x + dx, y, map);
+        int wc3 = walls_collide(x, y + dy, map);
+
+        if (wc1 == 5)
+        {
+            if (map_id == 1) {
+                map_id = 2;
+            }
+            else if (map_id == 2) {
+                map_id = 1;
+            };
+            x = 1.5;
+            y = 4.5;
+        }
+        else if (wc1 == 0)
         {
             x += dx;
             y += dy;
         }
-        else
+        else if (wc2 == 0)
         {
-            if (!walls_collide(x + dx, y, walls))
-            {
-                x += dx;
-            }
-            else
-            {
-                if (!walls_collide(x, y + dy, walls))
-                {
-                    y += dy;
-                };
-            };
+            x += dx;
+        }
+        else if (wc3 == 0)
+        {
+            y += dy;
         };
 
         if (input_state.keys["Left"])
@@ -130,10 +145,10 @@ public:
         angle = round_angle(angle);
     };
 
-    void update(InputState input_state, float frame_time, std::map<int, int> walls)
+    void update(InputState &input_state, const float &frame_time, Map &map)
     {
         moved = false;
-        movement(input_state, frame_time, walls);
+        movement(input_state, frame_time, map);
     };
 
     std::vector<sf::CircleShape> mini_copy()

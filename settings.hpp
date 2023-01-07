@@ -9,6 +9,7 @@ const float PI = 3.14159265359f;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const int TILE_TEXTURE_SIZE = 64;
+const int SPRITE_TEXTURE_SIZE = 64;
 const int HALF_WIDTH = WINDOW_WIDTH / 2;
 const int HALF_HEIGHT = WINDOW_HEIGHT / 2;
 const int TARGET_FPS = 60;
@@ -40,6 +41,7 @@ const float STEP_SIZE = 2.0f;
 const float TOLERANCE = 0.0001f;
 const float MAX_DISTANCE = 20.0;
 const int RAYS_NUMBER = WINDOW_WIDTH / STEP_SIZE;
+const float ANGLE_STEP = PLAYER_FOV / RAYS_NUMBER; // approximate, we use variable angle step
 const int MINI_MAP_RAYS_NUMBER = RAYS_NUMBER / 4;
 
 const float STEP_REL = STEP_SIZE / SCREEN_DISTANCE;

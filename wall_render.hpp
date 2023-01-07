@@ -21,9 +21,9 @@ public:
     float offset;
     int wall_id;
 
-    Ray(float angle)
+    Ray(const float &angle1)
     {
-        angle = angle;
+        angle = angle1;
         distance = 0.f;
         x_end = 0.f;
         y_end = 0.f;
@@ -40,7 +40,7 @@ public:
     float x;
     float y;
 
-    Raycast_walls(Player player, Map map)
+    Raycast_walls(Player &player, Map &map)
     {
         x = player.x;
         y = player.y;
@@ -91,7 +91,7 @@ public:
                 int tile = get_tile(x_hor, y_hor);
                 if (map.walls.count(tile) == 1)
                 {
-                    wall_hor = map.walls[tile];
+                    wall_hor = map.walls[tile].tex_id;
                     check_hor = true;
                 }
                 else
@@ -129,7 +129,7 @@ public:
                 int tile = get_tile(x_vert, y_vert);
                 if (map.walls.count(tile) == 1)
                 {
-                    wall_vert = map.walls[tile];
+                    wall_vert = map.walls[tile].tex_id;
                     check_vert = true;
                 }
                 else

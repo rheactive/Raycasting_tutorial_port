@@ -4,6 +4,7 @@
 #include <cmath>
 
 const float PI = 3.14159265359f;
+const float DEG = PI / 180.f;
 
 // main window settings
 const int WINDOW_WIDTH = 1920;

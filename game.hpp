@@ -256,7 +256,7 @@ public:
     void show_time()
     {
         sf::RectangleShape text_bg;
-        text_bg.setSize(sf::Vector2f(230, 100));
+        text_bg.setSize(sf::Vector2f(230, 140));
         text_bg.setPosition(sf::Vector2f(15, 15));
         text_bg.setFillColor(sf::Color(150, 150, 150, 255));
         text_bg.setOutlineThickness(5.f);
@@ -275,6 +275,22 @@ public:
         text = sf::Text(display_time.str(), font, 40);
         text.setFillColor(sf::Color::Black);
         text.setPosition(30.f, 60.f);
+        text.setOrigin(0.f, 0.f);
+        window.draw(text);
+        
+        // std::ostringstream display_angle;
+        // display_angle << "Angle: " << std::fixed << std::setprecision(0) << floor(180 * player.angle / PI);
+        // text = sf::Text(display_angle.str(), font, 40);
+        // text.setFillColor(sf::Color::Black);
+        // text.setPosition(30.f, 100.f);
+        // text.setOrigin(0.f, 0.f);
+        // window.draw(text);
+
+        std::ostringstream display_map;
+        display_map << "Map: " << player.map_id;
+        text = sf::Text(display_map.str(), font, 40);
+        text.setFillColor(sf::Color::Black);
+        text.setPosition(30.f, 100.f);
         text.setOrigin(0.f, 0.f);
         window.draw(text);
     };

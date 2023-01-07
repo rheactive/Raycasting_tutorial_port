@@ -36,7 +36,7 @@ public:
     int rays_start;
     int rays_end;
     int rays_number;
-    float offset;
+    float visible_part;
     bool on_screen;
 
     bool operator < (const Sprite& spr) const
@@ -72,10 +72,8 @@ public:
         rays_number = screen_width / STEP_SIZE;
         rays_start = rays_shift - screen_width / STEP_SIZE / 2;
         rays_end = rays_start + rays_number;
-        offset = 0.f;
         if (rays_start < 0)
         {
-            offset = 0.5 - screen_x / screen_width;
             rays_start = 0;
         };
         if (rays_end > RAYS_NUMBER)
@@ -83,9 +81,11 @@ public:
             rays_end = RAYS_NUMBER;
         };
 
+        visible_part = (rays_end - rays_start) * 1.f / rays_number * 1.f;
+
         rays_number = rays_end - rays_start;
 
-        if (rays_start < RAYS_NUMBER && rays_end > 0 && rays_number > 0 && dist_norm > 0.5)
+        if (visible_part > 0.1f && dist_norm > 0.5)
         {
             on_screen = true;
         }
@@ -97,7 +97,7 @@ public:
 
     sf::VertexArray draw_sprite(const std::vector<Ray> &rays)
     {
-        sf::VertexArray sprite_quads(sf::Quads, rays_number * 4);
+        sf::VertexArray sprite_quads(sf::Quads, 4);
 
         sprite_quads[0].position = sf::Vector2f(screen_x - 0.5f * screen_width,
                                                 HALF_HEIGHT + 0.5 * screen_height);

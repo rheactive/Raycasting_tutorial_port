@@ -11,12 +11,14 @@
 #include "map.hpp"
 
 float round_angle(float &angle) {
-    float a = angle / (2.0f * PI);
-    if (a > 1.0f) {
-        angle = angle - 2.0f * PI * floor(a);
+    float a = angle / PI;
+    if (a >= 2.0f) {
+        angle = angle - 2.0f * PI;
+        round_angle(angle);
     }
     if (a < 0.0) {
-        angle = angle + (1.0f - floor(a)) * 2.0f * PI;
+        angle = angle + 2.0f * PI;
+        round_angle(angle);
     }
     return(angle);
 };
@@ -43,6 +45,25 @@ int walls_collide(const float &x, const float &y, Map &map)
         wall_id = map.walls[tile].tex_id;
 
     return (wall_id);
+};
+
+int sprites_collide(const float &x, const float &y, Map &map)
+{
+    int sprite_id = 0;
+    int tile = get_tile(x + PLAYER_RADIUS, y + PLAYER_RADIUS);
+    if (map.sprites.count(tile) == 1)
+        sprite_id = map.sprites[tile].tex_id;
+    tile = get_tile(x + PLAYER_RADIUS, y - PLAYER_RADIUS);
+    if (map.sprites.count(tile) == 1)
+        sprite_id = map.sprites[tile].tex_id;
+    tile = get_tile(x - PLAYER_RADIUS, y + PLAYER_RADIUS);
+    if (map.sprites.count(tile) == 1)
+        sprite_id = map.sprites[tile].tex_id;
+    tile = get_tile(x - PLAYER_RADIUS, y - PLAYER_RADIUS);
+    if (map.sprites.count(tile) == 1)
+        sprite_id = map.sprites[tile].tex_id;
+
+    return (sprite_id);
 };
 
 class Player
@@ -104,6 +125,9 @@ public:
         int wc1 = walls_collide(x + dx, y + dy, map);
         int wc2 = walls_collide(x + dx, y, map);
         int wc3 = walls_collide(x, y + dy, map);
+        int sc1 = sprites_collide(x + dx, y + dy, map);
+        int sc2 = sprites_collide(x + dx, y, map);
+        int sc3 = sprites_collide(x, y + dy, map);
 
         if (wc1 == 5)
         {
@@ -116,16 +140,16 @@ public:
             x = 1.5;
             y = 4.5;
         }
-        else if (wc1 == 0)
+        else if (wc1 == 0 && sc1 == 0)
         {
             x += dx;
             y += dy;
         }
-        else if (wc2 == 0)
+        else if (wc2 == 0 && sc2 == 0)
         {
             x += dx;
         }
-        else if (wc3 == 0)
+        else if (wc3 == 0 && sc3 == 0)
         {
             y += dy;
         };

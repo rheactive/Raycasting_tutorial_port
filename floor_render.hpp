@@ -100,7 +100,7 @@ public:
 
         for (int k = 0; k < rays_number; k++)
         {
-            height_offset = STEP_SIZE * k / 2.f;
+            height_offset = k * 1.f;
             
             to_draw[4 * k].position = sf::Vector2f(0.0, WINDOW_HEIGHT - (height_offset + STEP_SIZE));
             to_draw[4 * k + 1].position = sf::Vector2f(0.0, WINDOW_HEIGHT - height_offset);
@@ -126,7 +126,7 @@ public:
 
         for (int k = 0; k < rays_number; k++)
         {
-            height_offset = STEP_SIZE * k / 2.f;
+            height_offset = k * 1.f;
             
             to_draw[4 * k].position = sf::Vector2f(0.0, height_offset);
             to_draw[4 * k + 1].position = sf::Vector2f(0.0, height_offset + STEP_SIZE);

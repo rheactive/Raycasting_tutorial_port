@@ -20,10 +20,20 @@ float distance(float x, float y)
 class SpriteTexData {
     public:
         std::map<int, float> sprite_width;
+        std::map<int, int> animations;
+        std::map<int, int> anim_delay;
         SpriteTexData () {
-            sprite_width[1] = 62.f;
-            sprite_width[2] = 59.f;
+            sprite_width[1] = 85.f;
+            sprite_width[2] = 64.f;
             sprite_width[3] = 32.f;
+
+            animations[1] = 1;
+            animations[2] = 8;
+            animations[3] = 3;
+
+            anim_delay[1] = 100;
+            anim_delay[2] = 9;
+            anim_delay[3] = 20;
         };
 };
 
@@ -48,13 +58,20 @@ public:
     float screen_width;
     int rays_start;
     int rays_end;
-    int rays_number;
-    float visible_part;
     bool on_screen;
+    int animations;
+    int anim_delay;
+    int anim_count;
 
     bool operator < (const Sprite& spr) const
     {
         return (dist_to_p > spr.dist_to_p);
+    };
+
+    void animate (const int &frame_count) {
+        if (animations > 1) {
+            anim_count = frame_count / anim_delay;
+        };
     };
 
     Sprite(int map_id, const MapElement &map_sprite, Player &player)
@@ -82,9 +99,12 @@ public:
         screen_x = rays_shift * STEP_SIZE;
         screen_height = SCREEN_DISTANCE / dist_norm;
         SpriteTexData sprite_tex_data;
+        animations = sprite_tex_data.animations[tex_id];
+        anim_delay = sprite_tex_data.anim_delay[tex_id];
+        anim_count = 0;
         tex_width = sprite_tex_data.sprite_width[tex_id];
         screen_width = screen_height * tex_width / SPRITE_TEXTURE_SIZE;
-        rays_number = screen_width / STEP_SIZE;
+        int rays_number = screen_width / STEP_SIZE;
         rays_start = rays_shift - screen_width / STEP_SIZE / 2;
         rays_end = rays_start + rays_number;
         if (rays_start < 0)
@@ -96,7 +116,7 @@ public:
             rays_end = RAYS_NUMBER;
         };
 
-        visible_part = (rays_end - rays_start) * 1.f / rays_number * 1.f;
+        float visible_part = (rays_end - rays_start) * 1.f / rays_number * 1.f;
 
         rays_number = rays_end - rays_start;
 
@@ -130,10 +150,10 @@ public:
                 id = 0;
         };
 
-        sprite_quads[0].texCoords = sf::Vector2f(0.f, (id + 1) * SPRITE_TEXTURE_SIZE);
-        sprite_quads[1].texCoords = sf::Vector2f(0.f, id * SPRITE_TEXTURE_SIZE);
-        sprite_quads[2].texCoords = sf::Vector2f(0.f + tex_width, id * SPRITE_TEXTURE_SIZE);
-        sprite_quads[3].texCoords = sf::Vector2f(0.f + tex_width, (id + 1) * SPRITE_TEXTURE_SIZE);
+        sprite_quads[0].texCoords = sf::Vector2f(anim_count * 1.f * tex_width, (id + 1) * SPRITE_TEXTURE_SIZE);
+        sprite_quads[1].texCoords = sf::Vector2f(anim_count * 1.f * tex_width, id * SPRITE_TEXTURE_SIZE);
+        sprite_quads[2].texCoords = sf::Vector2f((anim_count + 1.f) * tex_width, id * SPRITE_TEXTURE_SIZE);
+        sprite_quads[3].texCoords = sf::Vector2f((anim_count + 1.f) * tex_width, (id + 1) * SPRITE_TEXTURE_SIZE);
 
         return (sprite_quads);
     };
@@ -144,13 +164,14 @@ class Sprites
 public:
     std::vector<Sprite> sprites;
 
-    Sprites(int map_id, Map &map, Player &player)
+    Sprites(int map_id, const int &frame_count, Map &map, Player &player)
     {
         for (auto const &s : map.sprites)
         {
             Sprite sprite(map_id, s.second, player);
             if (sprite.on_screen)
             {
+                sprite.animate(frame_count);
                 sprites.push_back(sprite);
             };
         };

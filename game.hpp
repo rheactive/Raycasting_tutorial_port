@@ -40,6 +40,7 @@ public:
     std::vector<sf::RectangleShape> mini_map;
     Player player;
     std::vector<sf::CircleShape> mini_copy;
+    Raycast_walls raycast_walls = Raycast_walls(player, map);
     sf::VertexArray map_rays;
     sf::VertexArray wall_quads;
     sf::VertexArray floor_quads;
@@ -82,7 +83,7 @@ public:
         Raycast_walls raycast_walls(player, map);
         map_rays = raycast_walls.map_rays();
         wall_quads = raycast_walls.draw_walls();
-        Sprites sprites(1, map, player);
+        Sprites sprites(1, frame_count, map, player);
         sprite_quads = sprites.draw_sprites(raycast_walls.rays);
     };
 
@@ -113,9 +114,10 @@ public:
             map_rays = raycast_walls.map_rays();
             wall_quads = raycast_walls.draw_walls();
             sky = update_sky();
-            Sprites sprites(1, map, player);
-            sprite_quads = sprites.draw_sprites(raycast_walls.rays);
         };
+
+        Sprites sprites(map_id, frame_count, map, player);
+        sprite_quads = sprites.draw_sprites(raycast_walls.rays);
     };
 
     void game_draw()

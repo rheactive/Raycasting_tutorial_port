@@ -29,6 +29,8 @@ class Assets {
             ceil_textures.push_back(texture);
             texture.loadFromFile("resources/textures/sprites.png");
             sprite_textures.push_back(texture);
+            texture.loadFromFile("resources/textures/sword_00.png");
+            sprite_textures.push_back(texture);
         };
 };
 

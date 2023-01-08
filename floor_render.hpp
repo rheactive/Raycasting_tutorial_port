@@ -38,12 +38,14 @@ public:
         float half_height = half_width * WINDOW_HEIGHT / WINDOW_WIDTH;
         float scale = half_height / HALF_HEIGHT;
 
+        float camera_shake = head_bob(player.x, player.y);
+
         sf::Vector2f player_pos = sf::Vector2f(player.x, player.y);
         float a = player.angle;
         float cos_a = cos(a);
         float sin_a = sin(a);
 
-        float min_ray_depth = screen_dist / half_height * PLAYER_Z;
+        float min_ray_depth = screen_dist / half_height * (PLAYER_Z + camera_shake);
         float ray_depth = min_ray_depth;
         float ray_screen_height = 0.f;
 
@@ -53,7 +55,7 @@ public:
             ray_screen_height = ray_screen_height + scale;
 
             float texture_height = screen_dist 
-                / (half_height - ray_screen_height) * PLAYER_Z - ray_depth;
+                / (half_height - ray_screen_height) * (PLAYER_Z + camera_shake) - ray_depth;
 
             float texture_half_width = half_width / screen_dist 
                 * (ray_depth + texture_height / 2.0);
@@ -114,6 +116,74 @@ public:
         };
 
         return(to_draw);
+    };
+
+};
+
+class Raycast_ceiling
+{
+public:
+    std::vector<RayFloor> rays;
+
+    Raycast_ceiling(Player &player)
+    {
+        float screen_dist = 1.f;
+        float half_width = screen_dist * tan(HALF_FOV);
+        float half_height = half_width * WINDOW_HEIGHT / WINDOW_WIDTH;
+        float scale = half_height / HALF_HEIGHT;
+
+        float camera_shake = head_bob(player.x, player.y);
+
+        sf::Vector2f player_pos = sf::Vector2f(player.x, player.y);
+        float a = player.angle;
+        float cos_a = cos(a);
+        float sin_a = sin(a);
+
+        float min_ray_depth = screen_dist / half_height * (PLAYER_Z - camera_shake);
+        float ray_depth = min_ray_depth;
+        float ray_screen_height = 0.f;
+
+        while (ray_depth < MAX_DISTANCE) {
+            RayFloor ray;
+
+            ray_screen_height = ray_screen_height + scale;
+
+            float texture_height = screen_dist 
+                / (half_height - ray_screen_height) * (PLAYER_Z - camera_shake) - ray_depth;
+
+            float texture_half_width = half_width / screen_dist 
+                * (ray_depth + texture_height / 2.0);
+
+            sf::Vector2f ray_dir1 = sf::Vector2f(
+                ray_depth * cos_a, 
+                ray_depth * sin_a
+            );
+
+            sf::Vector2f ray_dir2 = sf::Vector2f(
+                (ray_depth + texture_height) * cos_a, 
+                (ray_depth + texture_height) * sin_a
+            );
+
+            sf::Vector2f perp_dir = sf::Vector2f(
+                texture_half_width * sin_a, 
+                -texture_half_width * cos_a
+            );
+
+            ray.uv11 = (player_pos + ray_dir2 + perp_dir) / FLOOR_SIZE;
+            ray.uv12 = (player_pos + ray_dir2 - perp_dir) / FLOOR_SIZE;
+            ray.uv21 = (player_pos + ray_dir1 + perp_dir) / FLOOR_SIZE;
+            ray.uv22 = (player_pos + ray_dir1 - perp_dir) / FLOOR_SIZE;
+
+            ray.uv11 *= FLOOR_TEXTURE_SIZE;
+            ray.uv12 *= FLOOR_TEXTURE_SIZE;
+            ray.uv21 *= FLOOR_TEXTURE_SIZE;
+            ray.uv22 *= FLOOR_TEXTURE_SIZE;
+
+            rays.push_back(ray);
+
+            ray_depth = ray_depth + texture_height;
+        };
+
     };
 
     sf::VertexArray draw_ceiling () {

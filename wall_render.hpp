@@ -39,6 +39,7 @@ public:
     std::vector<Ray> rays;
     float x;
     float y;
+    float camera_shake;
 
     Raycast_walls(Player &player, Map &map)
     {
@@ -50,6 +51,8 @@ public:
 
         float angle = player.angle;
         float ray_angle = angle - HALF_FOV + TOLERANCE;
+
+        camera_shake = head_bob(player.x, player.y);
 
         for (int k = 0; k < RAYS_NUMBER; k++)
         {
@@ -219,11 +222,14 @@ public:
             scale = rays[k].height / TILE_TEXTURE_SIZE;
             width = STEP_SIZE / scale;
             x1 = rays[k].offset * TILE_TEXTURE_SIZE;
+
+            float y1 = 0.5 * (1.f + 2.f * camera_shake);
+            float y2 = 0.5 * (1.f - 2.f * camera_shake);
             
-            to_draw[4 * k].position = sf::Vector2f(k * STEP_SIZE, HALF_HEIGHT + 0.5 * rays[k].height);
-            to_draw[4 * k + 1].position = sf::Vector2f(k * STEP_SIZE, HALF_HEIGHT - 0.5 * rays[k].height);
-            to_draw[4 * k + 2].position = sf::Vector2f(k * STEP_SIZE + STEP_SIZE, HALF_HEIGHT - 0.5 * rays[k].height);
-            to_draw[4 * k + 3].position = sf::Vector2f(k * STEP_SIZE + STEP_SIZE, HALF_HEIGHT + 0.5 * rays[k].height);
+            to_draw[4 * k].position = sf::Vector2f(k * STEP_SIZE, HALF_HEIGHT + y1 * rays[k].height);
+            to_draw[4 * k + 1].position = sf::Vector2f(k * STEP_SIZE, HALF_HEIGHT - y2 * rays[k].height);
+            to_draw[4 * k + 2].position = sf::Vector2f(k * STEP_SIZE + STEP_SIZE, HALF_HEIGHT - y2 * rays[k].height);
+            to_draw[4 * k + 3].position = sf::Vector2f(k * STEP_SIZE + STEP_SIZE, HALF_HEIGHT + y1 * rays[k].height);
 
             to_draw[4 * k].texCoords = sf::Vector2f(x1, (rays[k].wall_id-1) * TILE_TEXTURE_SIZE);
             to_draw[4 * k + 1].texCoords = sf::Vector2f(x1, rays[k].wall_id * TILE_TEXTURE_SIZE);

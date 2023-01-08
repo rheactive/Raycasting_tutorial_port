@@ -33,6 +33,8 @@ const float PLAYER_ANGLE = 0.0f;
 const float PLAYER_SPEED = 5.0f;
 const float PLAYER_ROT_SPEED = 2.0f;
 const float PLAYER_RADIUS = 0.35f;
+const float BOB_FREQUENCY = 3.f;
+const float BOB_MAGNITUDE = 0.05f;
 
 // raycasting related constants
 const float PLAYER_FOV = PI / 2.5f;

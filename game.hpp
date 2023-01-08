@@ -46,6 +46,7 @@ public:
     sf::VertexArray ceil_quads;
     sf::VertexArray sky;
     std::vector<sf::VertexArray> sprite_quads;
+    sf::Sprite weapon;
 
     Game()
     {
@@ -78,12 +79,18 @@ public:
 
         Raycast_floor raycast_floor(player);
         floor_quads = raycast_floor.draw_floor();
-        ceil_quads = raycast_floor.draw_ceiling();
+        Raycast_ceiling raycast_ceiling(player);
+        ceil_quads = raycast_ceiling.draw_ceiling();
         Raycast_walls raycast_walls(player, map);
         map_rays = raycast_walls.map_rays();
         wall_quads = raycast_walls.draw_walls();
-        Sprites sprites(1, frame_count, map, player);
-        sprite_quads = sprites.draw_sprites(raycast_walls.rays);
+        StaticSprites static_sprites(1, frame_count, map, player);
+        sprite_quads = static_sprites.draw_sprites(raycast_walls.rays);
+        weapon.setTexture(assets.sprite_textures[1]);
+        float weapon_scale = 0.7f;
+        weapon.setPosition(sf::Vector2f(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT - 1600. * weapon_scale));
+        weapon.setScale(sf::Vector2f(weapon_scale, weapon_scale));
+        weapon.setOrigin(0.f, 0.f);
     };
 
     void game_update()
@@ -108,13 +115,14 @@ public:
             mini_map = map.mini_map();
             Raycast_floor raycast_floor(player);
             floor_quads = raycast_floor.draw_floor();
-            ceil_quads = raycast_floor.draw_ceiling();
+            Raycast_ceiling raycast_ceiling(player);
+            ceil_quads = raycast_ceiling.draw_ceiling();
             Raycast_walls raycast_walls(player, map);
             map_rays = raycast_walls.map_rays();
             wall_quads = raycast_walls.draw_walls();
             sky = update_sky();
-            Sprites sprites(map_id, frame_count, map, player);
-            sprite_quads = sprites.draw_sprites(raycast_walls.rays);
+            StaticSprites static_sprites(map_id, frame_count, map, player);
+            sprite_quads = static_sprites.draw_sprites(raycast_walls.rays);
         };
     };
 
@@ -143,6 +151,9 @@ public:
 
         // draw rays
         window.draw(map_rays);
+
+        // draw weapon
+        window.draw(weapon);
 
         // show player on mini map
         draw_mini_copy();
@@ -279,7 +290,7 @@ public:
         text.setOrigin(0.f, 0.f);
         window.draw(text);
         std::ostringstream display_time;
-        display_time << "Time: " << minutes_count << ":" << seconds_count << ":" << ms_count;
+        display_time << "Time: " << minutes_count << ":" << seconds_count; // << ":" << ms_count;
         text = sf::Text(display_time.str(), font, 40);
         text.setFillColor(sf::Color::Black);
         text.setPosition(37.f, 67.f);

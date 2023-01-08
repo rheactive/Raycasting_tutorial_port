@@ -62,6 +62,7 @@ public:
     int animations;
     int anim_delay;
     int anim_count;
+    float camera_shake;
 
     bool operator < (const Sprite& spr) const
     {
@@ -128,20 +129,25 @@ public:
         {
             on_screen = false;
         };
+
+        camera_shake = head_bob(player.x, player.y);
     };
 
     sf::VertexArray draw_sprite(const std::vector<Ray> &rays)
     {
         sf::VertexArray sprite_quads(sf::Quads, 4);
 
+        float y1 = 0.5 * (1.f + 2.f * camera_shake);
+        float y2 = 0.5 * (1.f - 2.f * camera_shake);
+
         sprite_quads[0].position = sf::Vector2f(screen_x - 0.5f * screen_width,
-                                                HALF_HEIGHT + 0.5 * screen_height);
+                                                HALF_HEIGHT + y1 * screen_height);
         sprite_quads[1].position = sf::Vector2f(screen_x - 0.5f * screen_width,
-                                                HALF_HEIGHT - 0.5 * screen_height);
+                                                HALF_HEIGHT - y2 * screen_height);
         sprite_quads[2].position = sf::Vector2f(screen_x + 0.5f * screen_width,
-                                                HALF_HEIGHT - 0.5 * screen_height);
+                                                HALF_HEIGHT - y2 * screen_height);
         sprite_quads[3].position = sf::Vector2f(screen_x + 0.5f * screen_width,
-                                                HALF_HEIGHT + 0.5 * screen_height);
+                                                HALF_HEIGHT + y1 * screen_height);
 
         int id = tex_id;
 
@@ -159,12 +165,12 @@ public:
     };
 };
 
-class Sprites
+class StaticSprites
 {
 public:
     std::vector<Sprite> sprites;
 
-    Sprites(int map_id, const int &frame_count, Map &map, Player &player)
+    StaticSprites(int map_id, const int &frame_count, Map &map, Player &player)
     {
         for (auto const &s : map.sprites)
         {

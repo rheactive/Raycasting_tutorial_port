@@ -10,6 +10,10 @@
 #include "input.hpp"
 #include "map.hpp"
 
+float head_bob(float x, float y) {
+    return(BOB_MAGNITUDE * sin(BOB_FREQUENCY * x) * sin(BOB_FREQUENCY * y));
+};
+
 float round_angle(float &angle) {
     float a = angle / PI;
     if (a >= 2.0f) {

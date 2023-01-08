@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <vector>
+#include <map>
 
 #include <SFML/Graphics.hpp>
 
@@ -16,11 +17,23 @@ float distance(float x, float y)
     return (sqrt(x * x + y * y));
 };
 
+class SpriteTexData {
+    public:
+        std::map<int, float> sprite_width;
+        SpriteTexData () {
+            sprite_width[1] = 62.f;
+            sprite_width[2] = 59.f;
+            sprite_width[3] = 32.f;
+        };
+};
+
+
 class Sprite
 {
 public:
     int map_id;
     int tex_id;
+    float tex_width;
     float x;
     float y;
     float angle;
@@ -68,7 +81,9 @@ public:
         int rays_shift = RAYS_NUMBER / 2 + delta_rays;
         screen_x = rays_shift * STEP_SIZE;
         screen_height = SCREEN_DISTANCE / dist_norm;
-        screen_width = screen_height;
+        SpriteTexData sprite_tex_data;
+        tex_width = sprite_tex_data.sprite_width[tex_id];
+        screen_width = screen_height * tex_width / SPRITE_TEXTURE_SIZE;
         rays_number = screen_width / STEP_SIZE;
         rays_start = rays_shift - screen_width / STEP_SIZE / 2;
         rays_end = rays_start + rays_number;
@@ -117,8 +132,8 @@ public:
 
         sprite_quads[0].texCoords = sf::Vector2f(0.f, (id + 1) * SPRITE_TEXTURE_SIZE);
         sprite_quads[1].texCoords = sf::Vector2f(0.f, id * SPRITE_TEXTURE_SIZE);
-        sprite_quads[2].texCoords = sf::Vector2f(0.f + SPRITE_TEXTURE_SIZE, id * SPRITE_TEXTURE_SIZE);
-        sprite_quads[3].texCoords = sf::Vector2f(0.f + SPRITE_TEXTURE_SIZE, (id + 1) * SPRITE_TEXTURE_SIZE);
+        sprite_quads[2].texCoords = sf::Vector2f(0.f + tex_width, id * SPRITE_TEXTURE_SIZE);
+        sprite_quads[3].texCoords = sf::Vector2f(0.f + tex_width, (id + 1) * SPRITE_TEXTURE_SIZE);
 
         return (sprite_quads);
     };

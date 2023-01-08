@@ -28,13 +28,15 @@ public:
     float current_time;
     float frame_time;
     int frame_count;
+    int ms_count;
     int seconds_count;
     int minutes_count;
     int current_fps;
     sf::Font font;
     Assets assets;
     InputState input_state;
-    Map map = Map(1);
+    int map_id = 1;
+    Map map = Map(map_id);
     std::vector<sf::RectangleShape> mini_map;
     Player player;
     std::vector<sf::CircleShape> mini_copy;
@@ -70,6 +72,7 @@ public:
         current_fps = TARGET_FPS;
 
         frame_count = 0;
+        ms_count = 0;
         seconds_count = 0;
         minutes_count = 0;
 
@@ -98,7 +101,10 @@ public:
 
         if (player.moved)
         {
+            if (player.map_id != map_id) {
+            map_id = player.map_id;
             map = Map(player.map_id);
+            };
             mini_map = map.mini_map();
             Raycast_floor raycast_floor(player);
             floor_quads = raycast_floor.draw_floor();
@@ -237,12 +243,14 @@ public:
         frame_time = clock2.restart().asSeconds();
 
         frame_count += 1;
+        ms_count = floor(current_time * 1000.f);
 
         if (current_time >= 1.0)
         {
             seconds_count += 1;
             current_fps = frame_count;
             frame_count = 0;
+            ms_count = 0;
             clock1.restart();
         };
 
@@ -256,8 +264,8 @@ public:
     void show_time()
     {
         sf::RectangleShape text_bg;
-        text_bg.setSize(sf::Vector2f(230, 140));
-        text_bg.setPosition(sf::Vector2f(15, 15));
+        text_bg.setSize(sf::Vector2f(300, 150));
+        text_bg.setPosition(sf::Vector2f(20, 20));
         text_bg.setFillColor(sf::Color(150, 150, 150, 255));
         text_bg.setOutlineThickness(5.f);
         text_bg.setOutlineColor(sf::Color(50, 50, 50, 255));
@@ -267,14 +275,14 @@ public:
         display_fps << "FPS: " << current_fps;
         sf::Text text(display_fps.str(), font, 40);
         text.setFillColor(sf::Color::Black);
-        text.setPosition(30.f, 20.f);
+        text.setPosition(37.f, 27.f);
         text.setOrigin(0.f, 0.f);
         window.draw(text);
         std::ostringstream display_time;
-        display_time << "Time: " << minutes_count << ":" << seconds_count;
+        display_time << "Time: " << minutes_count << ":" << seconds_count << ":" << ms_count;
         text = sf::Text(display_time.str(), font, 40);
         text.setFillColor(sf::Color::Black);
-        text.setPosition(30.f, 60.f);
+        text.setPosition(37.f, 67.f);
         text.setOrigin(0.f, 0.f);
         window.draw(text);
         
@@ -290,7 +298,7 @@ public:
         display_map << "Map: " << player.map_id;
         text = sf::Text(display_map.str(), font, 40);
         text.setFillColor(sf::Color::Black);
-        text.setPosition(30.f, 100.f);
+        text.setPosition(37.f, 107.f);
         text.setOrigin(0.f, 0.f);
         window.draw(text);
     };

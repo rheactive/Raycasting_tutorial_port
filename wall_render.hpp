@@ -225,10 +225,10 @@ public:
             to_draw[4 * k + 2].position = sf::Vector2f(k * STEP_SIZE + STEP_SIZE, HALF_HEIGHT - 0.5 * rays[k].height);
             to_draw[4 * k + 3].position = sf::Vector2f(k * STEP_SIZE + STEP_SIZE, HALF_HEIGHT + 0.5 * rays[k].height);
 
-            to_draw[4 * k].texCoords = sf::Vector2f(x1, (rays[k].wall_id - 1) * TILE_TEXTURE_SIZE);
+            to_draw[4 * k].texCoords = sf::Vector2f(x1, (rays[k].wall_id-1) * TILE_TEXTURE_SIZE);
             to_draw[4 * k + 1].texCoords = sf::Vector2f(x1, rays[k].wall_id * TILE_TEXTURE_SIZE);
             to_draw[4 * k + 2].texCoords = sf::Vector2f(x1 + width, rays[k].wall_id * TILE_TEXTURE_SIZE);
-            to_draw[4 * k + 3].texCoords = sf::Vector2f(x1 + width, (rays[k].wall_id - 1) * TILE_TEXTURE_SIZE);
+            to_draw[4 * k + 3].texCoords = sf::Vector2f(x1 + width, (rays[k].wall_id-1) * TILE_TEXTURE_SIZE);
         };
 
         return(to_draw);

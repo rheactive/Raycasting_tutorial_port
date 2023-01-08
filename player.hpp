@@ -129,7 +129,7 @@ public:
         int sc2 = sprites_collide(x + dx, y, map);
         int sc3 = sprites_collide(x, y + dy, map);
 
-        if (wc1 == 5)
+        if (wc1 == 1)
         {
             if (map_id == 1) {
                 map_id = 2;

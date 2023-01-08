@@ -40,7 +40,6 @@ public:
     std::vector<sf::RectangleShape> mini_map;
     Player player;
     std::vector<sf::CircleShape> mini_copy;
-    Raycast_walls raycast_walls = Raycast_walls(player, map);
     sf::VertexArray map_rays;
     sf::VertexArray wall_quads;
     sf::VertexArray floor_quads;
@@ -100,7 +99,7 @@ public:
         player.update(input_state, frame_time, map);
         mini_copy = player.mini_copy();
 
-        if (player.moved)
+        if (true)
         {
             if (player.map_id != map_id) {
             map_id = player.map_id;
@@ -114,10 +113,9 @@ public:
             map_rays = raycast_walls.map_rays();
             wall_quads = raycast_walls.draw_walls();
             sky = update_sky();
+            Sprites sprites(map_id, frame_count, map, player);
+            sprite_quads = sprites.draw_sprites(raycast_walls.rays);
         };
-
-        Sprites sprites(map_id, frame_count, map, player);
-        sprite_quads = sprites.draw_sprites(raycast_walls.rays);
     };
 
     void game_draw()
